@@ -1,8 +1,16 @@
 prepare_and_get_data <- function(){
     obtain_dataset()
     household_power_consumption <- read.table("./data/household_power_consumption.txt", na.strings = "?", sep = ";", header = TRUE)
+    household_power_consumption$DateTime <- dmy(household_power_consumption$Date) + hms(household_power_consumption$Time)
     household_power_consumption$Date <- as.Date(household_power_consumption$Date, format="%d/%m/%Y") 
     household_power_consumption <- filter(household_power_consumption, Date == "2007-02-01" | Date == "2007-02-02")
+    household_power_consumption$Global_active_power <- as.numeric(household_power_consumption$Global_active_power) 
+    household_power_consumption$Global_reactive_power <- as.numeric(household_power_consumption$Global_reactive_power) 
+    household_power_consumption$Global_intensity <- as.numeric(household_power_consumption$Global_intensity)
+    household_power_consumption$Voltage <- as.numeric(household_power_consumption$Voltage)
+    household_power_consumption$Sub_metering_1 <- as.numeric(household_power_consumption$Sub_metering_1)
+    household_power_consumption$Sub_metering_2 <- as.numeric(household_power_consumption$Sub_metering_2)
+    household_power_consumption$Sub_metering_3 <- as.numeric(household_power_consumption$Sub_metering_3)
     household_power_consumption
 }
 
@@ -36,7 +44,7 @@ bdown <- function(url, file){
 
 # Install Dependencies only if they are not installed on the system
 installDependencies <- function(){
-    list_of_packages <- c('plyr', 'dplyr', 'RCurl', 'gdata')
+    list_of_packages <- c('plyr', 'dplyr', 'RCurl', 'gdata', 'lubridate')
     new_packages <- list_of_packages[!(list_of_packages %in% installed.packages()[,'Package'])]
     if(length(new_packages)) install.packages(new_packages)
 }
@@ -48,4 +56,5 @@ loadDependencies <- function(){
     library('dplyr')
     library('RCurl')
     library('gdata')
+    library('lubridate')
 }
